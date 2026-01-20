@@ -89,7 +89,7 @@ def hsv_segmentation(image):
 # --- BLOQUE PRINCIPAL ---
 if __name__ == "__main__":
     # Cargar imagen (Asegúrate de tener una imagen 'sample.jpg')
-    img = cv2.imread('sample.jpg')
+    img = cv2.imread('images/sample.jpg')
     
     if img is None:
         print("Error: No se encontró la imagen.")
