@@ -27,14 +27,21 @@ def manual_contrast_brightness(image, alpha, beta):
         numpy array uint8
     """
     # RETO 1: Implementar pipeline seguro
-    # 1. Convertir a float32 y normalizar a [0, 1]
-    # 2. Aplicar fórmula matemática vectorizada (Sin bucles for)
-    # 3. Aplicar np.clip para evitar valores fuera de rango
-    # 4. Des-normalizar (x255) y castear a uint8
     
-    # TODO: Escribir código aquí
-    processed_img = np.zeros_like(image) # Placeholder
-    return processed_img
+    # 1. Convertir a float32 y normalizar a [0, 1]
+    f_image = image.astype(np.float32) / 255
+
+    # 2. Aplicar fórmula matemática vectorizada (Sin bucles for)
+    beta_n = beta / 255
+    out = alpha * f_image + beta_n
+
+    # 3. Aplicar np.clip para evitar valores fuera de rango
+    out = np.clip(out, 0, 1)
+
+    # 4. Des-normalizar (x255) y castear a uint8
+    out_u8 = (out * 255).round().astype(np.uint8)
+    
+    return out_u8
 
 def manual_gamma_correction(image, gamma):
     """
@@ -44,9 +51,19 @@ def manual_gamma_correction(image, gamma):
     # Recordar: La operación potencia es costosa. 
     # Usar Look-Up Table (LUT) es una optimización común, pero aquí usa matemáticas directas en float.
     
-    # TODO: Escribir código aquí
-    gamma_img = np.zeros_like(image) # Placeholder
-    return gamma_img
+    # 1. Convertir a float32 y normalizar a [0, 1]
+    f_image = image.astype(np.float32) / 255
+
+    # 2. corrección gamma (vectorizada)
+    out = np.power(f_image, gamma)
+
+    # 3. Aplicar np.clip para evitar valores fuera de rango
+    out = np.clip(out, 0, 1)
+
+    # 4. Des-normalizar (x255) y castear a uint8
+    out_u8 = (out * 255).round().astype(np.uint8)
+    
+    return out_u8
 
 def hsv_segmentation(image):
     """
@@ -59,9 +76,8 @@ def hsv_segmentation(image):
     # OJO: En OpenCV Hue es [0, 179].
     # Ejemplo: Si buscas verde, H está alrededor de 60 (en escala 0-179).
     
-    # TODO: Definir lower_bound y upper_bound (np.array)
-    lower_bound = np.array([0, 0, 0]) 
-    upper_bound = np.array([0, 0, 0])
+    lower_bound = np.array([20, 80, 80], dtype=np.uint8)
+    upper_bound = np.array([35, 255, 255], dtype=np.uint8)
     
     # Crear máscara
     mask = cv2.inRange(hsv, lower_bound, upper_bound)
