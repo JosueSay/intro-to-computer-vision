@@ -1,10 +1,23 @@
+<!-- pandoc --from=markdown+implicit_figures+link_attributes worksheets/ws1/docs/ws1.md -o worksheets/ws1/docs/ws1.pdf --pdf-engine=xelatex -V geometry:top=0.67in -V geometry:bottom=0.67in -V geometry:left=0.85in -V geometry:right=0.85in -H header.tex --resource-path=.:images:worksheets/ws1/images/ -->
 # Hoja de Trabajo 1
+
+## Integrantes
+
+| Name              | Institution ID | GitHub User |
+| ----------------- | -------------- | ----------- |
+| Josué Say         | 22801          | JosueSay    |
+| Gustavo Cruz      | 22779          | G2309       |
+| Carlos Valladares | 221164         | vgcarlol    |
+
+## Enlaces
+
+- [Repositorio](https://github.com/JosueSay/intro-to-computer-vision/tree/main/worksheets/ws1)
 
 ## Task 1 - Análisis Teórico
 
 Considere cada uno de los siguientes escenarios y responda según corresponda.
 
-## Pregunta 1
+### Pregunta 1
 
 Como director de un proyecto de conducción autónoma, debe dimensionar el hardware para un nuevo vehículo. El sistema utiliza 8 cámaras que capturan video a resolución 4K UHD $(3840 \times 2160)$. Debido a la necesidad de alto rango dinámico (HDR), los sensores operan a 12 bits por píxel (Raw Bayer Pattern) a 60 FPS. Métrica A: enfocada puramente en el flujo vehicular.
 
@@ -47,7 +60,7 @@ Como director de un proyecto de conducción autónoma, debe dimensionar el hardw
     **Justificación:**
     El cálculo del inciso (b) arroja un requerimiento de **~47.8 Gbps** de subida (uplink). Aunque el marketing de 5G promete velocidades pico teóricas altas (10-20 Gbps en descarga), la velocidad de **subida** real en condiciones óptimas rara vez supera 1 Gbps (incluso con mmWave). El ancho de banda requerido excede la capacidad actual de la infraestructura por un factor de casi 50x. Es arquitectónicamente obligatorio procesar en el borde (Edge Computing) o aplicar compresión agresiva antes de transmitir.
 
-## Pregunta 2
+### Pregunta 2
 
 Considere un píxel con valor de intensidad $I_{in} = 50$ en una imagen estándar de 8 bits $(0{-}255)$. Se aplican dos procesos de mejora secuenciales en el siguiente orden:
 
@@ -91,7 +104,7 @@ Realice los cálculos en el dominio de flotantes normalizados $[0,1]$, como dict
 
     **Error:** Existe una desviación de aproximadamente **1.5 niveles de intensidad**. En procesamiento de video o gradientes suaves, este error acumulado causaría *banding* visible.
 
-## Pregunta 3
+### Pregunta 3
 
 Usted está programando un robot clasificador de pelotas. Tiene dos objetos: una pelota roja brillante bajo el sol $R_{rgb} = (255, 0, 0)$ y la misma pelota roja en una sombra profunda $S_{rgb} = (50, 0, 0)$.
 
@@ -149,10 +162,11 @@ Note que no puede usar `cv2.convertScaleAbs`. Debe hacerlo con pura manipulació
 - Se convirtió la imagen de `uint8` a `float32` y se normalizó al rango `[0,1]` usando `image.astype(np.float32) / 255`.
 - Se aplicó la transformación lineal vectorizada $g(x) = \alpha f(x) + \beta$, ajustando el brillo a escala normalizada ($\beta/255$).
 - Se aseguró el rango válido mediante `np.clip(out, 0, 1)`.
-- Se des-normalizó la imagen y se convirtió nuevamente a `uint8` usando `(out * 255).round().astype(np.uint8)`.
+- Se des-normalizó la imagen y se convirtió nuevamente a `uint8`.
+  - Usando `(out * 255).round().astype(np.uint8)`.
 - La implementación se realizó únicamente con operaciones vectorizadas de NumPy, sin usar funciones de caja negra.
 
-![Contraste Alto Manual](./images/contraste_alto_manual.png)
+![Contraste Alto Manual](../images/contraste_alto_manual.png)
 
 ### Ejercicio 2: Corrección Gamma Manual
 
@@ -170,7 +184,7 @@ Implemente la función `manual_gamma_correction(image, gamma)`. Para ello:
 - Se aplicó *clipping* para mantener los valores dentro del rango válido.
 - Se des-normalizó la imagen y se convirtió de regreso a `uint8`.
 
-![Corrección Gamma Manual](./images/correccion_gamma_0.5.png)
+![Corrección Gamma Manual](../images/correccion_gamma_0.5.png)
 
 ### Ejercicio 3: Segmentación Cromática
 
@@ -188,7 +202,7 @@ Implemente la función `hsv_segmentation(image)`. Para ello:
 - Se generó una máscara binaria mediante `cv2.inRange`.
 - Se aplicó la máscara a la imagen original para mostrar únicamente el objeto segmentado sobre un fondo negro.
 
-![Segmentación HSV](./images/segmentación_hsv.png)
+![Segmentación HSV](../images/segmentación_hsv.png)
 
 ## Task 3 – Preguntas Post-Práctica
 
