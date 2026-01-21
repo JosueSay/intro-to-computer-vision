@@ -166,7 +166,7 @@ Note que no puede usar `cv2.convertScaleAbs`. Debe hacerlo con pura manipulació
   - Usando `(out * 255).round().astype(np.uint8)`.
 - La implementación se realizó únicamente con operaciones vectorizadas de NumPy, sin usar funciones de caja negra.
 
-![Contraste Alto Manual](../images/contraste_alto_manual.png)
+![Contraste Alto Manual](./images/contraste_alto_manual.png)
 
 ### Ejercicio 2: Corrección Gamma Manual
 
@@ -184,7 +184,7 @@ Implemente la función `manual_gamma_correction(image, gamma)`. Para ello:
 - Se aplicó *clipping* para mantener los valores dentro del rango válido.
 - Se des-normalizó la imagen y se convirtió de regreso a `uint8`.
 
-![Corrección Gamma Manual](../images/correccion_gamma_0.5.png)
+![Corrección Gamma Manual](./images/correccion_gamma_0.5.png)
 
 ### Ejercicio 3: Segmentación Cromática
 
@@ -202,7 +202,7 @@ Implemente la función `hsv_segmentation(image)`. Para ello:
 - Se generó una máscara binaria mediante `cv2.inRange`.
 - Se aplicó la máscara a la imagen original para mostrar únicamente el objeto segmentado sobre un fondo negro.
 
-![Segmentación HSV](../images/segmentación_hsv.png)
+![Segmentación HSV](./images/segmentación_hsv.png)
 
 ## Task 3 – Preguntas Post-Práctica
 
