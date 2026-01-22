@@ -1,6 +1,7 @@
-import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+import numpy as np
+import os
 
 
 def normalizeTo255(img):
@@ -62,13 +63,37 @@ def mi_convolucion(imagen, kernel, padding_type='reflect'):
     Returns:
         np.ndarray: Imagen filtrada (H, W).
     """
-    # TODO: Validar que imagen sea 2D (grayscale)
-    # TODO: Validar kernel 2D y tamaño impar recomendado
-    # TODO: Flip del kernel (convolución) antes de aplicar
-    # TODO: Padding manual según padding_type
-    # TODO: Convolución optimizada (evitar 4 for; usar slicing / einsum o 2 for)
-    # TODO: Retornar resultado con tipo adecuado
-    raise NotImplementedError
+    if not isinstance(imagen, np.ndarray) or imagen.ndim != 2:
+        raise ValueError("mi_convolucion: 'imagen' debe ser np.ndarray 2D (grayscale).")
+    if not isinstance(kernel, np.ndarray) or kernel.ndim != 2:
+        raise ValueError("mi_convolucion: 'kernel' debe ser np.ndarray 2D.")
+    kH, kW = kernel.shape
+    if kH < 1 or kW < 1:
+        raise ValueError("mi_convolucion: kernel inválido.")
+    if (kH % 2 == 0) or (kW % 2 == 0):
+        # centralidad
+        raise ValueError("mi_convolucion: se recomienda kernel de tamaño impar (kH y kW impares).")
+
+    # Flip del kernel (convolución real)
+    k = np.flip(kernel, axis=(0, 1)).astype(np.float32)
+
+    pad_h = kH // 2
+    pad_w = kW // 2
+
+    img = imagen.astype(np.float32, copy=False)
+    padded = manualPad(img, pad_h, pad_w, padding_type)
+
+    # Ventanas (H, W, kH, kW)
+    try:
+        windows = np.lib.stride_tricks.sliding_window_view(padded, (kH, kW))
+    except AttributeError as e:
+        raise RuntimeError(
+            "Tu NumPy no tiene sliding_window_view. Actualiza NumPy o implementa ventanas con stride_tricks."
+        ) from e
+
+    # windows: (H, W, kH, kW)  y  k: (kH, kW)
+    out = np.einsum("ij,xyij->xy", k, windows, optimize=True)
+    return out.astype(np.float32)
 
 
 def generar_gaussiano(tamano, sigma):
@@ -112,15 +137,12 @@ def detectar_bordes_sobel(imagen):
 
 
 def main():
-    """
-    Punto de entrada para pruebas locales.
-    """
-    # TODO: Cargar imagen con cv2.imread
-    # TODO: Convertir a gris (si aplica)
-    # TODO: Generar kernel Gaussiano y filtrar con mi_convolucion (si quieres probar)
-    # TODO: Ejecutar detectar_bordes_sobel
-    # TODO: Visualizar con matplotlib
-    raise NotImplementedError
+    
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    img1_path = os.path.join(base_dir, "images", "task2.use-image1.png")
+    img2_path = os.path.join(base_dir, "images", "task2.use-image2.jpg")
+
+    paths = [img1_path, img2_path]
 
 
 if __name__ == "__main__":
