@@ -11,4 +11,4 @@
 
 ## Enlaces
 
-- [Repositorio](https://github.com/JosueSay/intro-to-computer-vision/tree/main/worksheets/ws1)
+- [Repositorio](https://github.com/JosueSay/intro-to-computer-vision/tree/main/labs/lab1)
