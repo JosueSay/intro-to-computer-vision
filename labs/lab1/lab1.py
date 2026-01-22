@@ -3,6 +3,53 @@ import cv2
 import matplotlib.pyplot as plt
 
 
+def normalizeTo255(img):
+    """
+    Normaliza una matriz a rango [0, 255] para visualización.
+    """
+    img = img.astype(np.float32, copy=False)
+    mn = float(np.min(img))
+    mx = float(np.max(img))
+    if mx - mn < 1e-12:
+        return np.zeros_like(img, dtype=np.float32)
+    return (img - mn) * (255.0 / (mx - mn))
+
+
+def toGray(imagen):
+    """
+    Convierte a grayscale si viene en BGR; si ya es 2D, retorna igual.
+    """
+    if imagen is None:
+        raise ValueError("Imagen es None (ruta inválida o archivo no encontrado).")
+    if imagen.ndim == 2:
+        return imagen
+    if imagen.ndim == 3 and imagen.shape[2] == 3:
+        return cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+    raise ValueError(f"Formato de imagen no soportado: shape={imagen.shape}")
+
+
+def manualPad(imagen, pad_h, pad_w, padding_type):
+
+    if pad_h < 0 or pad_w < 0:
+        raise ValueError("pad_h y pad_w deben ser >= 0")
+
+    mode_map = {
+        "reflect": ("reflect", None),
+        "replicate": ("edge", None),
+        "wrap": ("wrap", None),
+        "zero": ("constant", 0),
+    }
+    if padding_type not in mode_map:
+        raise ValueError("padding_type debe ser: 'reflect' | 'replicate' | 'wrap' | 'zero'")
+
+    mode, cval = mode_map[padding_type]
+    pad_width = ((pad_h, pad_h), (pad_w, pad_w))
+
+    if mode == "constant":
+        return np.pad(imagen, pad_width, mode=mode, constant_values=cval)
+    return np.pad(imagen, pad_width, mode=mode)
+
+
 def mi_convolucion(imagen, kernel, padding_type='reflect'):
     """
     Aplica convolución 2D a una imagen en escala de grises con padding manual.
@@ -61,30 +108,6 @@ def detectar_bordes_sobel(imagen):
     # TODO: Normalizar magnitud a 0-255 para visualización
     # TODO: Calcular dirección: arctan2(Gy, Gx)
     # TODO: Retornar (G, theta)
-    raise NotImplementedError
-
-
-def manualPad(imagen, pad_h, pad_w, padding_type):
-    """
-    Padding manual (camelCase para diferenciar).
-    """
-    # TODO: Implementar zero/reflect/replicate/wrap sin usar cv2.copyMakeBorder
-    raise NotImplementedError
-
-
-def normalizeTo255(img):
-    """
-    Normaliza una matriz a rango [0, 255] para visualización.
-    """
-    # TODO: Implementar normalización robusta (manejar max==min)
-    raise NotImplementedError
-
-
-def toGray(imagen):
-    """
-    Convierte a grayscale si viene en BGR; si ya es 2D, retorna igual.
-    """
-    # TODO: Si imagen tiene 3 canales, convertir a gris (permitido con cv2.cvtColor)
     raise NotImplementedError
 
 
