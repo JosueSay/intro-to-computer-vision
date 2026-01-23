@@ -4,6 +4,8 @@
 
 Se permite el uso de OpenCV únicamente para lectura y/o escritura de imágenes y visualización de las mismas, no para algoritmos de procesamiento. Es decir, está prohibido usar `cv2.filter2D`, `cv2.GaussianBlur`, `cv2.Sobel`, o `cv2.Canny`. Debe usar NumPy y operaciones matriciales.
 
+> **Nota:** La dirección del gradiente $\theta$ se calcula y se retorna en **radianes**, utilizando la función $\arctan2(G_y, G_x)$.
+
 ### Ejercicio 1: Convolución 2D Genérica
 
 Escriba una función `mi_convolucion(imagen, kernel, padding_type='reflect')`, considerando lo siguiente:

@@ -107,11 +107,23 @@ def generar_gaussiano(tamano, sigma):
     Returns:
         np.ndarray: Kernel Gaussiano 2D normalizado (suma = 1.0).
     """
-    # TODO: Validar tamano (entero > 0) y sigma (> 0)
-    # TODO: Crear grilla centrada (coordenadas)
-    # TODO: Evaluar Gaussiana 2D
-    # TODO: Normalizar para que la suma sea 1.0
-    raise NotImplementedError
+    if not isinstance(tamano, int) or tamano <= 0:
+        raise ValueError("generar_gaussiano: 'tamano' debe ser entero > 0.")
+    if tamano % 2 == 0:
+        raise ValueError("generar_gaussiano: 'tamano' debe ser impar para centrar el kernel.")
+    if not (isinstance(sigma, (int, float)) and sigma > 0):
+        raise ValueError("generar_gaussiano: 'sigma' debe ser > 0.")
+
+    r = tamano // 2
+    ax = np.arange(-r, r + 1, dtype=np.float32)
+    xx, yy = np.meshgrid(ax, ax)
+
+    gauss = np.exp(-(xx**2 + yy**2) / (2.0 * (sigma**2)))
+    s = float(np.sum(gauss))
+    if s <= 0:
+        raise ValueError("generar_gaussiano: suma inválida del kernel.")
+    gauss /= s
+    return gauss.astype(np.float32)
 
 
 def detectar_bordes_sobel(imagen):
@@ -126,14 +138,26 @@ def detectar_bordes_sobel(imagen):
             - G (np.ndarray): Magnitud normalizada a 0-255 (float o uint8).
             - theta (np.ndarray): Dirección del gradiente (radianes o grados).
     """
-    # TODO: Validar grayscale
-    # TODO: Definir kernels Sobel Gx y Gy (3x3)
-    # TODO: Aplicar mi_convolucion para obtener gradientes Gx_img y Gy_img
-    # TODO: Calcular magnitud: sqrt(Gx^2 + Gy^2)
-    # TODO: Normalizar magnitud a 0-255 para visualización
-    # TODO: Calcular dirección: arctan2(Gy, Gx)
-    # TODO: Retornar (G, theta)
-    raise NotImplementedError
+    if not isinstance(imagen, np.ndarray) or imagen.ndim != 2:
+        raise ValueError("detectar_bordes_sobel: 'imagen' debe ser np.ndarray 2D (grayscale).")
+
+    # Kernels Sobel clásicos (3x3)
+    Gx = np.array([[-1, 0, 1],
+                   [-2, 0, 2],
+                   [-1, 0, 1]], dtype=np.float32)
+
+    Gy = np.array([[-1, -2, -1],
+                   [ 0,  0,  0],
+                   [ 1,  2,  1]], dtype=np.float32)
+
+    gx_img = mi_convolucion(imagen, Gx, padding_type="reflect")
+    gy_img = mi_convolucion(imagen, Gy, padding_type="reflect")
+
+    mag = np.sqrt(gx_img**2 + gy_img**2).astype(np.float32)
+    G = normalizeTo255(mag)
+
+    theta = np.arctan2(gy_img, gx_img).astype(np.float32)  # radianes [-pi, pi]
+    return G, theta
 
 
 def main():
