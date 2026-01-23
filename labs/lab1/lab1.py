@@ -168,6 +168,55 @@ def main():
 
     paths = [img1_path, img2_path]
 
+    for p in paths:
+        bgr = cv2.imread(p, cv2.IMREAD_COLOR)
+        gray = toGray(bgr)
+
+        k_gauss = generar_gaussiano(tamano=5, sigma=1.0)
+        gray_smooth = mi_convolucion(gray, k_gauss, padding_type="reflect")
+
+        G_raw, theta_raw = detectar_bordes_sobel(gray)
+        G_smooth, theta_smooth = detectar_bordes_sobel(gray_smooth)
+
+        # Visualización
+        fig, axs = plt.subplots(
+            2, 3,
+            figsize=(16, 8),
+            gridspec_kw={"hspace": 0.35, "wspace": 0.15}
+        )
+
+        fig.canvas.manager.set_window_title(
+            f"Procedimiento -s {os.path.basename(p)}"
+        )
+
+        # Fila 1: sin suavizado
+        axs[0, 0].imshow(gray, cmap="gray")
+        axs[0, 0].set_title("Gray (original)")
+        axs[0, 0].axis("off")
+
+        axs[0, 1].imshow(G_raw, cmap="gray")
+        axs[0, 1].set_title("Sobel |G| (raw)")
+        axs[0, 1].axis("off")
+
+        axs[0, 2].imshow(theta_raw, cmap="gray")
+        axs[0, 2].set_title("Dirección theta (raw)")
+        axs[0, 2].axis("off")
+
+        # Fila 2: con suavizado
+        axs[1, 0].imshow(gray_smooth, cmap="gray")
+        axs[1, 0].set_title("Gray (Gauss 5x5, sigma=1)")
+        axs[1, 0].axis("off")
+
+        axs[1, 1].imshow(G_smooth, cmap="gray")
+        axs[1, 1].set_title("Sobel |G| (smooth)")
+        axs[1, 1].axis("off")
+
+        axs[1, 2].imshow(theta_smooth, cmap="gray")
+        axs[1, 2].set_title("Dirección theta (smooth)")
+        axs[1, 2].axis("off")
+
+        plt.show()
+        
 
 if __name__ == "__main__":
     main()

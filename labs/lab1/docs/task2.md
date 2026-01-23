@@ -114,3 +114,17 @@ $$
 usando `np.arctan2`, que elige el cuadrante correctamente (ángulo en $[-\pi, \pi]$).  
 
 **Referencia:** documentación oficial de [`arctan2`](https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html).  
+
+### Resultados
+
+Al aplicar Sobel directamente sobre la imagen original (**raw**), la magnitud del gradiente muestra una gran cantidad de bordes finos. Esto ocurre porque Sobel responde a **cualquier variación local de intensidad**, incluyendo textura y ruido. Como resultado, el mapa de bordes es más cargado y menos selectivo.
+
+Al introducir un **suavizado Gaussiano previo** ($\sigma = 1$, kernel 5×5), el comportamiento cambia de forma clara. La imagen suavizada elimina variaciones pequeñas, y el Sobel aplicado posteriormente produce un mapa de bordes **más limpio y legible**, donde se resaltan principalmente las estructuras importantes.
+
+En la **dirección del gradiente**, el caso *raw* presenta orientaciones muy variables y poco estables debido al ruido. En cambio, con suavizado, la dirección $\theta$ se vuelve **más coherente**, disminuye la cantidad de direcciones irrelevantes y los bordes aparecen mejor definidos y continuos.
+
+> Esto confirma que aplicar un Gaussiano antes de Sobel mejora la calidad del gradiente y prepara mejor la imagen para etapas posteriores de detección de bordes.
+
+![Test Imagen 1](../images/task2.result-image1.png)
+
+![Test Imagen 2](../images/task2.result-image2.png)
