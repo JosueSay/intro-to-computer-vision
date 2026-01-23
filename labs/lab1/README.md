@@ -12,3 +12,11 @@
 ## Enlaces
 
 - [Repositorio](https://github.com/JosueSay/intro-to-computer-vision/tree/main/labs/lab1)
+
+## Comandos
+
+```bash
+cd .\labs\lab1\
+pip install -r requirements.txt
+python ./task2.py
+```
