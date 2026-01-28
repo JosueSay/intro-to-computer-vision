@@ -20,6 +20,7 @@
 cd .\labs\lab1\
 pip install -r requirements.txt
 python ./task2.py
+python ./task3.py
 ```
 
 ## Integrantes
