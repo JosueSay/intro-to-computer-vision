@@ -8,10 +8,9 @@ Considerando el escenario previamente planteado, conteste:
 
 Su jefe sugiere usar un filtro de media (Box Filter) de 7x7 para eliminar el ruido rápido. Usted cree que es una mala idea. Explique matemáticamente y con un diagrama visual (dibujado) por qué un Box Filter de ese tamaño es perjudicial para la detección precisa de la posición de un obstáculo comparado con un filtro Gaussiano del mismo tamaño.
 
-
 **Idea:** Un Box Filter 7×7 promedia todos los píxeles por igual, lo que termina desplazando y degradando la ubicación real de un borde. El filtro Gaussiano 7×7 también suaviza el ruido, pero asigna mayor peso a los píxeles cercanos al centro, conservando mejor la posición del obstáculo.
 
-**Box Filter (media) 7×7**
+**Box Filter (media) 7×7:**
 
 - Cada elemento del kernel tiene el mismo peso:
   
@@ -28,11 +27,11 @@ Su jefe sugiere usar un filtro de media (Box Filter) de 7x7 para eliminar el rui
   - La transición se ensancha.
   - La posición exacta del borde puede desplazarse porque influyen muchos píxeles lejanos.
 
-**Filtro Gaussiano 7×7**
+**Filtro Gaussiano 7×7:**
 
 - El peso de cada píxel depende de su distancia al centro:
 
-  h(i,j) = (1 / (2 * pi * sigma²)) * exp( - (i² + j²) / (2 * sigma²) )
+  h(i,j) = (1 / (2 *pi* sigma²)) *exp( - (i² + j²) / (2* sigma²) )
 
 - Luego el kernel se normaliza para que la suma total sea 1.
 
@@ -41,7 +40,7 @@ Su jefe sugiere usar un filtro de media (Box Filter) de 7x7 para eliminar el rui
   - Los píxeles lejanos pesan menos.
   - Se reduce el ruido sin destruir tanto la pendiente del borde.
 
-**Por qué el Box 7×7 es peor para localizar obstáculos**
+**Por qué el Box 7×7 es peor para localizar obstáculos:**
 
 En detección de bordes (Sobel, Laplaciano, Canny) se buscan cambios locales fuertes.  
 Un Box Filter grande promedia demasiado, haciendo que:
@@ -50,14 +49,13 @@ Un Box Filter grande promedia demasiado, haciendo que:
 - Algunos bordes no superen el umbral.
 - La textura del suelo se mezcle con obstáculos, causando detecciones imprecisas.
 
-**Diagrama visual (dibujado a mano)**
+**Diagrama visual (dibujado a mano):**
 
 Se puede dibujar una señal 1D tipo escalón:
 
 - Original: cambio brusco.
 - Box 7×7: rampa ancha y desplazada.
 - Gaussiano 7×7: rampa más suave pero centrada.
-
 
 ## Pregunta 2
 
@@ -66,7 +64,6 @@ Al realizar la convolución en los bordes de la imagen (por ejemplo, en el píxe
    a. Si el robot navega por pasillos oscuros con luces brillantes al final, ¿por qué el Zero-Padding podría generar falsos positivos de bordes en la periferia de la imagen?
 
    b. ¿Qué estrategia de padding (Reflect, Replicate, Wrap) recomendaría para evitar esto y por qué?
-
 
 Al realizar la convolución en los bordes de la imagen (por ejemplo en el píxel (0,0)), parte del kernel queda fuera de la imagen.
 
@@ -85,28 +82,30 @@ Al aplicar operadores de borde, este salto artificial genera gradientes fuertes 
 Se recomienda **Reflect Padding**.
 
 **Razones:**
+
 - Refleja los valores reales de la imagen.
 - Mantiene continuidad de intensidades.
 - Evita saltos bruscos artificiales.
 - Reduce detecciones falsas cerca de los bordes.
 
 Comparación rápida:
+
 - Replicate: repite el borde (aceptable).
 - Wrap: mezcla lados opuestos (no realista).
 - Reflect: más estable para visión robótica.
-
 
 ## Pregunta 3
 
 Dada la siguiente sub-imagen I de 3x3 y el kernel K:
 
    a. Calcule el valor del píxel central resultante de la convolución
-      
+
    Se multiplican los valores correspondientes y se suman:
 
    0·10 + 1·10 + 0·10  
-   + 1·10 + (-4)·0 + 1·10  
-   + 0·10 + 1·10 + 0·10  
+
+- 1·10 + (-4)·0 + 1·10  
+- 0·10 + 1·10 + 0·10  
 
    = 10 + 10 + 10 + 10  
    = **40**
@@ -116,14 +115,15 @@ Dada la siguiente sub-imagen I de 3x3 y el kernel K:
    > Nota: El kernel es simétrico, por lo que el flip de la convolución no cambia el resultado.
 
    b. ¿Qué tipo de estructura detecta este filtro K (conocido como Laplaciano)?
-      
+
    Este kernel es un **Laplaciano 4-conexo**, un operador de segunda derivada.
 
    Detecta:
-   - Bordes
-   - Esquinas
-   - Cambios bruscos de intensidad
-   - Puntos aislados
+
+- Bordes
+- Esquinas
+- Cambios bruscos de intensidad
+- Puntos aislados
 
    En este caso, el centro es muy distinto a sus vecinos, por lo que el filtro responde con un valor alto, indicando una discontinuidad fuerte.
 
