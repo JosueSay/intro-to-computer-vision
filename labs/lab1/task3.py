@@ -41,6 +41,61 @@ def pickNoisyImage(datasetPath, index=0):
     return files[index]
 
 
+def umbral_simple(magnitud, T):
+    # magnitud viene 0–255 (float). salida binaria 0/255
+    return (magnitud >= T).astype(np.uint8) * 255
+
+
+def experimentB(gray, sigma=1, ksize=5, Ts=(30, 60, 90, 120, 150), cannyLow=50, cannyHigh=150):
+    # Pre-suavizado
+    if sigma is not None:
+        k = generar_gaussiano(tamano=int(ksize), sigma=float(sigma))
+        work = mi_convolucion(gray, k, padding_type="reflect")
+    else:
+        work = gray.astype(np.float32, copy=False)
+
+    # Sobel magnitud (0–255)
+    G, _ = detectar_bordes_sobel(work)
+
+    # Umbral simple para varios T
+    thImgs = [umbral_simple(G, T) for T in Ts]
+
+    # Canny (uint8 0–255)
+    workU8 = np.clip(work, 0, 255).astype(np.uint8)
+    canny = cv2.Canny(workU8, cannyLow, cannyHigh)
+
+
+    # Original + G + Thresholds + Canny
+    cols = 3
+    rows = int(np.ceil((2 + len(Ts) + 1) / cols))
+    fig, axs = plt.subplots(rows, cols, figsize=(16, 4 * rows))
+    fig.canvas.manager.set_window_title("Task 3 - Experimento B (Threshold vs Canny)")
+
+    axs = np.array(axs).reshape(-1)
+
+    i = 0
+    axs[i].imshow(gray, cmap="gray"); axs[i].set_title("Noisy (gray)"); axs[i].axis("off"); i += 1
+    axs[i].imshow(G, cmap="gray"); axs[i].set_title(f"Sobel |G| (pre-gauss sigma={sigma})"); axs[i].axis("off"); i += 1
+
+    for T, img in zip(Ts, thImgs):
+        axs[i].imshow(img, cmap="gray")
+        axs[i].set_title(f"Umbral simple T={T}")
+        axs[i].axis("off")
+        i += 1
+
+    axs[i].imshow(canny, cmap="gray")
+    axs[i].set_title(f"cv2.Canny (low={cannyLow}, high={cannyHigh})")
+    axs[i].axis("off")
+    i += 1
+
+    # Apagar ejes sobrantes
+    while i < len(axs):
+        axs[i].axis("off")
+        i += 1
+
+    plt.show()
+
+
 def sobelMagnitudeWithOptionalGaussian(gray, sigma=None, ksize=None):
     if sigma is None:
         G, _ = detectar_bordes_sobel(gray)
@@ -102,7 +157,18 @@ def experimentA(imagePath, outDir="images"):
 def main():
     datasetPath = downloadDatasetToProject()
     imgPath = pickNoisyImage(datasetPath, index=0)
+
+    bgr = cv2.imread(imgPath, cv2.IMREAD_COLOR)
+    gray = toGray(bgr)
+
     experimentA(imgPath, outDir=os.path.join(getProjectRoot(), "images"))
+
+    experimentB(
+        gray,
+        sigma=2, ksize=9,
+        Ts = (70, 80, 90),
+        cannyLow=80, cannyHigh=200
+    )
 
 
 if __name__ == "__main__":

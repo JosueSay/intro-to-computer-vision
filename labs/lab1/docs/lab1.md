@@ -70,7 +70,7 @@ Se puede dibujar una señal 1D tipo escalón:
 - Box 7×7: rampa ancha y desplazada.
 - Gaussiano 7×7: rampa más suave pero centrada.
 
-## Pregunta 2
+#### Pregunta 2
 
 Al realizar la convolución en los bordes de la imagen (por ejemplo, en el píxel (0,0), el kernel "se sale" de la imagen).
 
@@ -80,7 +80,7 @@ Al realizar la convolución en los bordes de la imagen (por ejemplo, en el píxe
 
 Al realizar la convolución en los bordes de la imagen (por ejemplo en el píxel (0,0)), parte del kernel queda fuera de la imagen.
 
-### a. ¿Por qué Zero-Padding genera falsos positivos?
+#### a. ¿Por qué Zero-Padding genera falsos positivos?
 
 Con Zero-Padding, los píxeles fuera de la imagen se asumen con valor 0.  
 En un pasillo oscuro con zonas brillantes, esto crea un contraste artificial entre:
@@ -90,7 +90,7 @@ En un pasillo oscuro con zonas brillantes, esto crea un contraste artificial ent
 
 Al aplicar operadores de borde, este salto artificial genera gradientes fuertes que **no existen realmente**, produciendo falsos bordes en la periferia de la imagen.
 
-### b. Estrategia de padding recomendada
+#### b. Estrategia de padding recomendada
 
 Se recomienda **Reflect Padding**.
 
@@ -107,7 +107,7 @@ Comparación rápida:
 - Wrap: mezcla lados opuestos (no realista).
 - Reflect: más estable para visión robótica.
 
-## Pregunta 3
+### Pregunta 3
 
 Dada la siguiente sub-imagen I de 3x3 y el kernel K:
 
@@ -315,3 +315,38 @@ Cuando no hay suavizado, la textura del suelo y el ruido generan demasiados fals
 Para detectar pallets grandes e ignorar grietas pequeñas del suelo, la opción más adecuada es un **suavizado Gaussiano con $\sigma$ alto** (por ejemplo $\sigma = 5$). Aunque se pierde detalle fino, se obtiene un mapa de bordes más estable y robusto.
 
 ![Resultado Experimento A](../images/task3.result-image-expA.png)
+
+### Experimento B: Histéresis Manual (Simulación de Canny)
+
+Usted ha calculado la Magnitud del Gradiente en el paso 3.3. Ahora implemente una función simple de umbralización `umbral_simple(magnitud, T)` y compare visualmente con `cv2.Canny`.
+
+#### Inciso 1
+
+**Intente encontrar un valor $T$ único que limpie el ruido pero mantenga los bordes**
+
+En la práctica no existe un único $T$ que simultáneamente que elimine el ruido por completo, y mantenga bordes completos y continuos.
+
+En la figura se observa que al aumentar $T$ se reduce el ruido, pero también se empiezan a perder partes del borde real.
+
+#### Inciso 2
+
+**Observe el resultado: ¿Se rompen las líneas de los bordes?**
+
+Sí. El umbral simple rompe bordes porque en un mismo contorno hay zonas con gradiente fuerte y otras con gradiente débil.
+En particular:
+
+- con **$T=70$** aparecen demasiados falsos positivos (ruido),
+- con **$T=80$** se obtiene el mejor compromiso, pero todavía hay fragmentación,
+- con **$T=90$** se pierde conectividad: varios tramos del borde desaparecen.
+
+#### Inciso 3
+
+**Explique por qué un simple umbral de corte (Thresholding) nunca será tan efectivo como el método de Histéresis usado en Canny. ¿Qué problema específico resuelve la conectividad de la histéresis en el contexto de un robot moviéndose y vibrando (lo que causa cambios leves de iluminación en los bordes)?**
+
+El thresholding es una decisión local e independiente por píxel y si un punto cae apenas por debajo de $T$, se descarta, aunque sea parte de un borde real. Esto hace que pequeñas variaciones de iluminación o ruido rompan el contorno.
+
+Canny resuelve este problema con **histéresis por conectividad** al distinguir bordes **fuertes** (por encima de `high`) y bordes **débiles** (entre `low` y `high`). Los débiles se conservan únicamente si están **conectados** a un borde fuerte, lo que mantiene bordes continuos y evita que el ruido aislado aparezca como borde.
+
+En el contexto de un robot moviéndose y vibrando, donde hay cambios leves de iluminación en los bordes, la histéresis evita que un mismo borde “parpadee” o se corte por pequeñas fluctuaciones del gradiente. Produce detecciones más estables para navegación, seguimiento de líneas y toma de decisiones.
+
+![Resultado Experimento B](../images/task3.result-image-expB.png)
