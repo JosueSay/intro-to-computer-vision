@@ -1,6 +1,8 @@
 <!-- pandoc --from=markdown+implicit_figures+link_attributes worksheets/ws1/docs/ws1.md -o worksheets/ws1/docs/ws1.pdf --pdf-engine=xelatex -V geometry:top=0.67in -V geometry:bottom=0.67in -V geometry:left=0.85in -V geometry:right=0.85in -H header.tex --resource-path=.:images:worksheets/ws1/images/ -->
 # Hoja de Trabajo 1
 
+> **Nota:** El pdf se encuentra en [docs/](./docs/ws1.pdf)
+
 ## Integrantes
 
 | Name              | Institution ID | GitHub User |
