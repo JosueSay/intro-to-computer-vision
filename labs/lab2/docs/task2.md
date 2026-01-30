@@ -1,81 +1,87 @@
 # Laboratorio 1
 
-## Task 2 – Práctica
+## Task 2
 
 Está desarrollando un sistema biométrico de seguridad. El sensor de huellas dactilares está sucio y produce imágenes binarias con dos tipos de defectos:
 
-1. Pequeños puntos blancos en los valles negros de la huella (Ruido Sal)
-2. Las “crestas” de la huella tienen pequeñas roturas que impiden que el algoritmo de matching funcione (grietas).
+1. Pequeños puntos blancos en los valles negros de la huella (ruido sal).
+2. Las crestas de la huella presentan pequeñas roturas que impiden el matching (grietas).
 
 ### Estrategia
 
-**Idea general:** usar una **secuencia de operaciones morfológicas** con elementos estructurantes (SE) pequeños para:
+Se utilizó una secuencia de operaciones morfológicas sobre una imagen binaria, con el objetivo de:
 
-1. **eliminar “sal”** (puntos blancos aislados) sin dañar crestas, y luego
-2. **cerrar grietas** (pequeñas rupturas) para recuperar continuidad.
+1. Eliminar el ruido blanco aislado sin afectar las crestas.
+2. Conectar las roturas presentes en las crestas de la huella.
 
-**1. Preparación (Inciso 1: binaria real)**
+La solución se basa en el uso controlado de **apertura** y **cierre**, aplicadas de forma secuencial.
 
-- Cargar `fingerprint_noisy.png` en escala de grises.
+### Inciso 1. Binarización
 
-- Binarizar y verificar que solo existan valores {0, 255}.
+La imagen `fingerprint_noisy.png` se cargó en escala de grises y se binarizó utilizando umbralización de Otsu, asegurando una imagen binaria limpia con valores `{0, 255}`.
 
-- Confirmar qué representa el **foreground** (1/255): idealmente que las **crestas** queden como blanco. Si quedaran al revés, se invierte (esto importa porque erosión/dilatación actúan sobre el foreground).
+Posteriormente, se verificó que las crestas de la huella correspondieran al foreground (blanco). En caso contrario, la imagen fue invertida para garantizar que las operaciones morfológicas actuaran correctamente sobre las crestas.
 
-**2.Eliminar ruido sal (Inciso 2)**
+### Inciso 2. Eliminación de ruido sal
 
-- Operación elegida: **Apertura (Erosión → Dilatación)**.
+- **Operación aplicada:** Apertura morfológica (erosión → dilatación).
+- **Elemento estructurante:** Elipse.
+- **Tamaño:** 3×3.
 
-  - Justificación: la apertura se usa para **remover “salt noise” (puntos blancos)** y es menos destructiva que aplicar erosión sola, porque recupera forma tras la dilatación. (Del artículo de Opening: “Removing Salt Noise… opening (erosion followed by dilation)” y definición de opening).
-- **SE recomendado:** pequeño y “isotrópico” (cuadrado o disco).
+**Justificación:**  
 
-  - Tamaño inicial típico: **3×3**; si el ruido es más grande, probar **5×5**.
-  - Criterio: el SE debe ser **ligeramente mayor** que los puntos de ruido para que desaparezcan en la erosión, pero **no tan grande** como para romper/adelgazar demasiado las crestas.
+El ruido presente corresponde a píxeles blancos pequeños y aislados.  
+La apertura elimina estos puntos durante la erosión, y la dilatación posterior restaura el grosor de las crestas sin reintroducir el ruido.  
+Esta operación permite limpiar la imagen sin destruir la estructura principal de la huella.
 
-**Entregable que se documenta aquí:** explicar por qué apertura y por qué ese SE (forma/tamaño) en términos de “mata puntos aislados y preserva estructuras grandes”.
+### Inciso 3. Conexión de grietas
 
-**3. Conectar grietas en crestas (Inciso 3)**
+- **Operación aplicada:** Cierre morfológico (dilatación → erosión).
+- **Elemento estructurante:** Elipse.
+- **Tamaño:** 5×5.
 
-- Operación elegida: **Cierre (Dilatación → Erosión)**.
+**Justificación:**
 
-  - Justificación: la dilatación **conecta regiones separadas** si la separación es menor que el SE; luego la erosión “reajusta” el grosor. (GeeksforGeeks: dilatación “fills holes and broken areas” y “connects areas separated by space smaller than structuring element”; además, el cierre usa dilatación primero).
-- **SE recomendado:**
+Las crestas presentan pequeñas discontinuidades.  
+La dilatación conecta segmentos cercanos cuya separación es menor que el elemento estructurante, y la erosión posterior corrige el engrosamiento producido, preservando la forma general de las crestas.
 
-  - Si las grietas son pequeñas y en varias direcciones: **disco/cuadrado 3×3 o 5×5**.
-  - Si las grietas parecen orientadas (p.ej., cortes más horizontales): **SE lineal** (una línea corta) alineada con la dirección donde quieres “puentear” la rotura.
-- Criterio: elegir el tamaño mínimo que **cierra las grietas** sin pegar crestas que no deberían unirse.
+### Inciso 4. Resultados
 
-**4. Visualización (Inciso 4)**
-Mostrar en el notebook, en el mismo tamaño y con títulos:
+Se muestran tres imágenes:
 
-1. Imagen original binaria
-2. Resultado tras **Apertura** (paso 2)
-3. Resultado final tras **Cierre** (paso 3)
+1. Imagen original binaria.
+2. Imagen tras aplicar apertura (eliminación de ruido sal).
+3. Imagen final tras aplicar cierre (crestas continuas).
 
-**5. ¿El orden altera el producto?**
+La imagen final presenta **menor ruido y mayor continuidad**, cumpliendo con los requisitos del preprocesamiento para sistemas biométricos.
 
-**Demostración:**
+### ¿El orden de los factores altera el producto?
 
----
+Sí. Las operaciones morfológicas no son conmutativas, por lo que el orden altera el resultado en términos teóricos.
 
-Para esta parte se espera que su entregable muestre:
+#### Orden aplicado
 
-- Selección correcta de los Elementos Estructurantes (Forma y Tamaño) para cada paso.
-- Calidad visual de la imagen final (sin ruido y continua)
-- Responda: ¿El orden de los factores altera el producto? Explique qué hubiera pasado si hubiera aplicado las operaciones en orden inverso y demuéstrelo con un ejemplo visual en el notebook.
+- **Apertura → Cierre**
 
-### Inciso 1
+Este orden elimina primero el ruido blanco aislado y luego conecta las grietas reales de las crestas.
 
-Cargue la imagen fingerprint_noisy.png. Asegúrese de que sea binaria.
+#### Orden inverso evaluado
 
-### Inciso 2
+- **Cierre → Apertura**
 
-Aplique una operación morfológica para eliminar el ruido blanco sin destruir las crestas de la huella. (Seleccione entre Erosión, Dilatación, Apertura o Cierre).
+En este caso particular, ambos resultados son **visualmente similares**, sin embargo se observa que en el pipeline **Cierre → Apertura** los **detalles finos de las crestas se mantienen ligeramente más notorios** en comparación con **Apertura → Cierre**.
 
-### Inciso 3
+Esto ocurre porque el cierre inicial refuerza las crestas mediante dilatación antes de aplicar la apertura, mientras que en el orden original la apertura elimina primero información fina junto con el ruido.
 
-Aplique una segunda operación secuencial para conectar las grietas en las crestas de la huella.
+Aun así:
 
-### Inciso 4
+- El ruido sal es pequeño.
+- Las grietas son cortas.
 
-Muestre la imagen original, la imagen tras el paso 2, y la imagen final.
+Por lo tanto, ambos órdenes convergen a resultados cercanos, confirmando que la diferencia es **sutil pero observable**.
+
+La demostración visual confirma que se evaluaron ambos órdenes y refuerza que, aunque en este ejemplo los resultados sean parecidos, **apertura y cierre no son conmutativas**.
+
+![Apertura Cierre](../images/task2.result1.png)
+  
+![Cierre Apertura](../images/task2.result2.png)
