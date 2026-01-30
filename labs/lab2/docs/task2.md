@@ -69,18 +69,11 @@ Este orden elimina primero el ruido blanco aislado y luego conecta las grietas r
 
 - **Cierre → Apertura**
 
-En este caso particular, ambos resultados son **visualmente similares**, sin embargo se observa que en el pipeline **Cierre → Apertura** los **detalles finos de las crestas se mantienen ligeramente más notorios** en comparación con **Apertura → Cierre**.
+El resultado sí cambia de forma respecto a **Apertura → Cierre**.
 
-Esto ocurre porque el cierre inicial refuerza las crestas mediante dilatación antes de aplicar la apertura, mientras que en el orden original la apertura elimina primero información fina junto con el ruido.
+Al aplicar **cierre primero**, la dilatación expande y refuerza muchas estructuras del patrón (incluyendo ruido y fragmentos), y luego la erosión no revierte completamente ese efecto. Cuando después se aplica la **apertura**, la erosión elimina gran parte de los detalles finos y segmentos delgados, provocando que las crestas queden **fragmentadas** y aparezcan **pérdidas importantes de continuidad**, como se observa en la imagen final del orden inverso.
 
-Aun así:
-
-- El ruido sal es pequeño.
-- Las grietas son cortas.
-
-Por lo tanto, ambos órdenes convergen a resultados cercanos, confirmando que la diferencia es **sutil pero observable**.
-
-La demostración visual confirma que se evaluaron ambos órdenes y refuerza que, aunque en este ejemplo los resultados sean parecidos, **apertura y cierre no son conmutativas**.
+Esto confirma visualmente que **apertura y cierre no son conmutativas** y que el orden altera el resultado.
 
 ![Apertura Cierre](../images/task2.result1.png)
   
