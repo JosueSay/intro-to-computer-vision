@@ -19,6 +19,7 @@
 ```bash
 cd .\labs\lab2\
 pip install -r requirements.txt
+python ./task1.py
 python ./task2.py
 python ./task3.py
 ```
