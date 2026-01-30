@@ -3,6 +3,13 @@
 
 > **Nota:** El pdf se encuentra en [docs/](./docs/lab1.pdf)
 
+## Integrantes
+
+| Name              | Institution ID | GitHub User |
+| ----------------- | -------------- | ----------- |
+| Josué Say         | 22801          | JosueSay    |
+| Carlos Valladares | 221164         | vgcarlol    |
+
 ## Enlaces
 
 - [Repositorio](https://github.com/JosueSay/intro-to-computer-vision/tree/main/labs/lab1)
@@ -15,17 +22,6 @@ pip install -r requirements.txt
 python ./task2.py
 python ./task3.py
 ```
-
-## Integrantes
-
-| Name              | Institution ID | GitHub User |
-| ----------------- | -------------- | ----------- |
-| Josué Say         | 22801          | JosueSay    |
-| Carlos Valladares | 221164         | vgcarlol    |
-
-## Enlaces
-
-- [Repositorio](https://github.com/JosueSay/intro-to-computer-vision/tree/main/worksheets/ws1)
 
 ## Task 1 - Análisis Teórico
 
