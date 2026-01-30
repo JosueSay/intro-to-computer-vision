@@ -1,6 +1,6 @@
-# Laboratorio 1
+# Laboratorio 2
 
-## Task 3 – Evaluación de Ingenería y Criterio
+## Task 3
 
 Una fábrica textil necesita detectar rasgaduras en telas de mezclilla (denim) automáticamente. El problema es que la tela tiene una textura natural fuerte (patrón repetitivo) que confunde a los detectores de bordes simples (Canny), detectando el tejido como si fuera un defecto. Por ello se le pide que usted diseñe un pipeline híbrido que combine Fourier y Morfología para aislar solamente la rasgadura. Para ello comienza por probar su solución en una imagen que tiene a mano.
 
