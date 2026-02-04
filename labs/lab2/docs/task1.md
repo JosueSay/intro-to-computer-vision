@@ -10,31 +10,23 @@ Para esta parte se espera que entregue:
 - Imagen restaurada exitosamente (sin rayas y con detalles nítidos)
 - Explique por qué un filtro de promedio (average filter) de 5x5 en el dominio espacial hubiera sido una mala solución para este problema específico.
 
----
-
 ### Inciso 1
 
 Cargue la imagen `periodic_noise.jpg` en escala de grises.
-
-![Imagen original con ruido periódico](images/periodic_noise.jpg)
-
----
+<!-- 
+![Imagen original con ruido periódico](../images/periodic_noise.jpg) -->
 
 ### Inciso 2
 
 Calcule la Transformada Discreta de Fourier (DFT) y desplace el componente de frecuencia cero al centro.
 
-![DFT centrada](images/task1_dft_centered.png)
-
----
+![DFT centrada](../images/task1_dft_centered.png)
 
 ### Inciso 3
 
 Muestre el Espectro de Magnitud en escala logarítmica.
 
-![Espectro de magnitud en escala logarítmica](images/task1_magnitude_spectrum.png)
-
----
+![Espectro de magnitud en escala logarítmica](../images/task1_magnitude_spectrum.png)
 
 ### Inciso 4
 
@@ -42,25 +34,19 @@ Identifique visualmente los "picos" de energía que no corresponden a la informa
 
 En el espectro se observan picos brillantes simétricos alejados del centro, los cuales corresponden al ruido sinusoidal periódico responsable de las rayas diagonales en la imagen original.
 
-![Picos de ruido señalados](images/task1_magnitude_peaks.png)
-
----
+![Picos de ruido señalados](../images/task1_magnitude_peaks.png)
 
 ### Inciso 5
 
 Cree una máscara (Notch Filter) que bloquee específicamente esas frecuencias parásitas (haciéndolas cero), pero preserve el resto del espectro, incluyendo el componente DC.
 
-![Máscara Notch Filter](images/task1_notch_mask.png)
-
----
+![Máscara Notch Filter](../images/task1_notch_mask.png)
 
 ### Inciso 6
 
 Aplique la Transformada Inversa (IDFT) para recuperar la imagen espacial.
 
-![Imagen restaurada sin ruido periódico](images/task1_restored.png)
-
----
+![Imagen restaurada sin ruido periódico](../images/task1_restored.png)
 
 ### Justificación del método
 
