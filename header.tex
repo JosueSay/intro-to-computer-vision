@@ -58,4 +58,14 @@
 % ----------------- Hipervínculos -----------------
 \hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
 
+% ----------------- Figuras SIN flotado -----------------
+\makeatletter
+\let\origfigure\figure
+\let\endorigfigure\endfigure
+\renewenvironment{figure}[1][H]%
+  {\origfigure[H]}%
+  {\endorigfigure}
+\makeatother
+
+
 % pandoc --from=markdown+implicit_figures+link_attributes <path_md_input> -o <path_pdf_output> --pdf-engine=xelatex -V geometry:top=0.67in -V geometry:bottom=0.67in -V geometry:left=0.85in -V geometry:right=0.85in -H <path header.tex> --resource-path=.:images:<path_images>
