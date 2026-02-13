@@ -1,7 +1,7 @@
 <!-- jupyter nbconvert lab4.ipynb --to html -->
 # Laboratorio 4
 
-> **Nota:** El pdf se encuentra en [docs/](./docs/lab3.pdf)
+> **Nota:** El pdf se encuentra en [docs/](./docs/lab4.pdf)
 
 ## Integrantes
 
