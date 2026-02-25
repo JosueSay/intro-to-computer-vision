@@ -1,5 +1,5 @@
 <!-- jupyter nbconvert lab5.ipynb --to html -->
-# Laboratorio 4
+# Laboratorio 5
 
 > **Nota:** El pdf se encuentra en [docs/](./docs/lab5.pdf)
 
