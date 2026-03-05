@@ -12,4 +12,4 @@
 
 ## Enlaces
 
-- [Repositorio](https://github.com/JosueSay/intro-to-computer-vision/tree/main/worksheets/se1)
+- [Repositorio](https://github.com/JosueSay/intro-to-computer-vision/tree/main/short-exam/se1)
